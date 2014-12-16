@@ -8,43 +8,45 @@ public class Game {
 
     private int totalScore;
     private int currentRoll = 0;
-    private List<Integer> rolls = new ArrayList<Integer>();
+    private List<Frame> frames = new ArrayList<Frame>();
 
     public void roll(int pins) {
-        rolls.add(0);
-        rolls.set(currentRoll++, pins);
-        if(isStrike(rolls.size()-1)){
-            rolls.add(0);
-            currentRoll++;
+        if ( (currentRoll & 1) == 0 ) {
+            Frame frame = new Frame();
+            frame.setFirstRoll(pins);
+            checkStrike(frame);
+            frames.add(frame);
+        } else {
+            frames.get(frames.size() - 1).setSecondRoll(pins);
         }
+        currentRoll++;
     }
 
     public int score() {
         totalScore = 0;
         int frameIndex = 0;
-        for(int frame = 0; frame < 10; frame ++){
-            if (isStrike(frameIndex)) {
-                totalScore += 10 + framePinCount(frameIndex+2);
-            } else if(isSpare(frameIndex)) {
-                totalScore += 10 + rolls.get(frameIndex+2);
+
+        for (Frame frame :frames) {
+            if (frame.isSpare()) {
+                totalScore += 10 + frames.get(frameIndex + 1).getFirstRoll();
+            } else if(frame.isStrike()) {
+                totalScore += 10 + frames.get(frameIndex+1).total();
             } else {
-                totalScore += (framePinCount(frameIndex));
+                totalScore += frame.total();
             }
-            frameIndex += 2;
+            frameIndex ++;
+            System.out.println(totalScore);
         }
-//        System.out.println(rolls);
+
         return totalScore;
     }
 
-    private boolean isSpare(int frameIndex) {
-        return framePinCount(frameIndex) ==  10;
+
+    private void checkStrike(Frame frame) {
+        if(frame.isStrike()){
+            frame.setSecondRoll(0);
+            currentRoll++;
+        }
     }
 
-    private boolean isStrike(int frameIndex) {
-        return rolls.get(frameIndex) ==  10 && frameIndex % 2 == 0;
-    }
-
-    private int framePinCount(int frameIndex) {
-        return rolls.get(frameIndex) + rolls.get(frameIndex + 1);
-    }
 }
