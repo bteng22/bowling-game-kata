@@ -4,9 +4,6 @@ import org.junit.Test;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-/**
- * Created by brandonteng on 12/15/14.
- */
 public class BowlingGameTest {
 
     private Game g;
@@ -55,6 +52,29 @@ public class BowlingGameTest {
         g.roll(10);
         rollMany(18, 1);
         assertThat(g.score(), is(30));
+    }
+
+    @Test
+    public void testOneTurkey() {
+        g.roll(10);
+        g.roll(10);
+        g.roll(10);
+        rollMany(14, 1);
+        assertThat(g.score(), is(77));
+    }
+
+    @Test
+    public void spareOnTenthFrame() {
+        rollMany(19, 1);
+        g.roll(9);
+        g.roll(1);
+        assertThat(g.score(), is(29));
+    }
+
+    @Test
+    public void testAllStrikes() {
+        rollMany(12, 10);
+        assertThat(g.score(), is(300));
     }
 
     private void rollSpare() {

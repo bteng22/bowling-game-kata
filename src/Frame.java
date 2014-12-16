@@ -1,9 +1,6 @@
-/**
- * Created by ThoughtWorker on 12/16/14.
- */
 public class Frame {
-    private Integer firstRoll;
-    private Integer secondRoll;
+    private Integer firstRoll = 0;
+    private Integer secondRoll = 0;
 
     public Integer getFirstRoll() {
         return firstRoll;

@@ -1,9 +1,8 @@
+import com.javafx.tools.doclets.formats.html.SourceToHTMLConverter;
+
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by brandonteng on 12/15/14.
- */
 public class Game {
 
     private int totalScore;
@@ -26,25 +25,27 @@ public class Game {
         totalScore = 0;
         int frameIndex = 0;
 
-        for (Frame frame :frames) {
-            if (frame.isSpare()) {
-                totalScore += 10 + frames.get(frameIndex + 1).getFirstRoll();
-            } else if(frame.isStrike()) {
-                totalScore += 10 + frames.get(frameIndex+1).total();
-            } else {
-                totalScore += frame.total();
-            }
+        for (Frame frame : frames) {
+            if(frameIndex < 10) totalScore += getFrameScore(frameIndex, frame);
             frameIndex ++;
-            System.out.println(totalScore);
         }
 
         return totalScore;
     }
 
+    private Integer getFrameScore(int frameIndex, Frame frame) {
+        if (frame.isSpare()) return 10 + frames.get(frameIndex + 1).getFirstRoll();
+        if (isStrikeAndWillStrikeNextFrame(frameIndex)) return 20 + frames.get(frameIndex+2).getFirstRoll();
+        if (frame.isStrike()) return 10 + frames.get(frameIndex+1).total();
+        return frame.total();
+    }
+
+    private boolean isStrikeAndWillStrikeNextFrame(int index) {
+        return frames.get(index).isStrike() && frames.get(index+1).isStrike() && index < 9;
+    }
 
     private void checkStrike(Frame frame) {
-        if(frame.isStrike()){
-            frame.setSecondRoll(0);
+        if(frame.isStrike() && frames.size() < 10){
             currentRoll++;
         }
     }
